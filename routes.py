@@ -122,32 +122,29 @@ def delete_category(category_id):
 
     return redirect("/category")
 
-
-@app.route("/category/<category_name>/edit_category/<int:category_id>", methods=["GET", "POST"])
+@app.route("/edit_category/<int:category_id>", methods=["GET", "POST"])
 @login_required
 @admin_required
-def edit_category(category_id, category_name):
+def edit_category(category_id):
     category = Category.query.get(category_id)
     form = CategoryForm(name=category.Name, description=category.Description, link=category.Link)
-    
+
     if form.validate_on_submit():
         category.Name = form.name.data
         category.Description = form.description.data
         category.Link = form.link.data
-        image = form.image.data
-        directory = path.join(app.root_path, "static", "images", image.filename)
-        image.save(directory)
-        category.image = image.filename
 
         image = form.image.data
-        if image and image.filename: 
-            directory = path.join(app.root_path, "static", "images", image.filename)
-            image.save(directory)
-            category.image = image.filename  
+        if image and image.filename:
+            image_path = path.join(app.root_path, "static", "images", image.filename)
+            image.save(image_path)
+            category.image = image.filename
 
         db.session.commit()
         return redirect("/")
-    return render_template("add_category.html", form=form, category=category_name)
+
+    return render_template("add_category.html", form=form, category=category.Name)
+
 
 
 @app.route('/category/<category_name>')
@@ -200,8 +197,21 @@ def edit_article(article_id, category_name):
                     text3 = article.text3, text4 = article.text4, text5 = article.text5)
     
     if form.validate_on_submit():
-        article.name = form.name.data
-        article.release_year = form.release_year.data
+        article.heading = form.heading.data        
+        article.summary = form.summary.data
+        article.category = form.category.data
+        article.description = form.description.data
+        article.subheading1 = form.subheading1.data
+        article.text1 = form.text1.data
+        article.subheading2 = form.subheading2.data
+        article.text2 = form.text2.data
+        article.subheading3 = form.subheading3.data
+        article.text3 = form.text3.data
+        article.subheading4 = form.subheading4.data
+        article.text4 = form.text4.data
+        article.subheading5 = form.subheading5.data
+        article.text5 = form.text5.data
+        
 
         image = form.image.data
         directory = path.join(app.root_path, "static", "images", image.filename)
