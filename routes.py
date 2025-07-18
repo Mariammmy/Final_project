@@ -214,15 +214,10 @@ def edit_article(article_id, category_name):
         
 
         image = form.image.data
-        directory = path.join(app.root_path, "static", "images", image.filename)
-        image.save(directory)
-        article.image = image.filename
-
-        image = form.image.data
-        if image and image.filename: 
-            directory = path.join(app.root_path, "static", "images", image.filename)
-            image.save(directory)
-            article.image = image.filename 
+        if image and image.filename:
+            image_path = path.join(app.root_path, "static", "images", image.filename)
+            image.save(image_path)
+            article.image = image.filename
 
         db.session.commit()
         return redirect("/")
